@@ -53,7 +53,6 @@
             background-color: #128c7e;
         }
 
-        /* Badge das Imagens */
         .img-badge {
             position: absolute;
             bottom: 1rem;
@@ -85,12 +84,15 @@
     <nav class="fixed w-full z-50 glass py-4">
         <div class="max-w-6xl mx-auto px-6 flex justify-between items-center">
             <h1 class="text-xl font-bold tracking-tighter">THIGAS<span class="text-blue-500">.</span>AUTO</h1>
-            <div class="space-x-8 text-sm font-medium hidden md:flex">
+            <div class="space-x-8 text-sm font-medium hidden md:flex items-center">
                 <a href="#home" class="hover:text-blue-400 transition">Início</a>
                 <a href="#infra" class="hover:text-blue-400 transition">Infraestrutura</a>
                 <a href="#ia" class="hover:text-blue-400 transition">Inteligência</a>
-                <a href="#resultados" class="hover:text-blue-400 transition">Resultados</a>
-                <a href="https://wa.me/5511988407323" target="_blank" class="bg-blue-600 hover:bg-blue-500 px-5 py-2 rounded-full transition">WhatsApp</a>
+                <a href="#tecnologia" class="hover:text-blue-400 transition">Entenda a Magia</a>
+                <a href="https://www.linkedin.com/in/thiago-esposito-soares-b719a7178" target="_blank" class="hover:text-blue-400 transition">
+                    <i data-lucide="linkedin" class="w-5 h-5"></i>
+                </a>
+                <a href="https://wa.me/5511988407323" target="_blank" class="bg-blue-600 hover:bg-blue-500 px-5 py-2 rounded-full transition shadow-lg shadow-blue-500/20">WhatsApp</a>
             </div>
         </div>
     </nav>
@@ -108,9 +110,9 @@
                 Especialista em automação de ponta a ponta: da infraestrutura em nuvem à inteligência artificial generativa aplicada ao seu negócio. 
             </p>
             <div class="flex flex-col md:flex-row justify-center gap-4">
-                <a href="#infra" class="bg-white text-slate-900 px-8 py-4 rounded-xl font-bold hover:bg-slate-200 transition text-center">Ver Tecnologia</a>
-                <a href="https://github.com/Thigasrp" target="_blank" class="glass px-8 py-4 rounded-xl font-bold hover:bg-white/10 transition flex items-center justify-center gap-2">
-                    <i data-lucide="github" class="w-5 h-5"></i> GitHub
+                <a href="#tecnologia" class="bg-white text-slate-900 px-8 py-4 rounded-xl font-bold hover:bg-slate-200 transition text-center shadow-lg shadow-white/5">Como Funciona?</a>
+                <a href="https://www.linkedin.com/in/thiago-esposito-soares-b719a7178" target="_blank" class="glass px-8 py-4 rounded-xl font-bold hover:bg-white/10 transition flex items-center justify-center gap-2">
+                    <i data-lucide="linkedin" class="w-5 h-5"></i> LinkedIn
                 </a>
             </div>
         </div>
@@ -132,7 +134,6 @@
                     <img src="assets/aws-console.png" onclick="openModal(this.src)" alt="Console AWS" class="rounded-xl w-full zoom-img">
                     <span class="img-badge">Console Infraestrutura AWS</span>
                 </div>
-                <p class="text-[10px] text-slate-500 mt-2 text-center italic">Clique para ampliar e ver detalhes do servidor</p>
             </div>
         </div>
     </section>
@@ -155,7 +156,7 @@
                 <div class="group relative">
                     <div class="glass p-2 rounded-2xl overflow-hidden shadow-2xl">
                         <img src="assets/log-terminal.png" onclick="openModal(this.src)" alt="Logs de Execução" class="rounded-lg w-full zoom-img">
-                        <span class="img-badge">Monitoramento em Tempo Real (Logs)</span>
+                        <span class="img-badge">Monitoramento em Tempo Real</span>
                     </div>
                 </div>
             </div>
@@ -177,8 +178,8 @@
                         <div class="absolute top-4 right-4 bg-green-600 text-[10px] font-bold px-3 py-1 rounded-full text-white">CONFERIDO</div>
                     </div>
                     <div class="flex items-center gap-3 mb-4 h-14">
-                        <div class="flex-shrink-0 w-8 h-8 bg-green-500/20 rounded-full flex items-center justify-center"><i data-lucide="check-circle-2" class="text-green-500 w-5 h-5"></i></div>
-                        <h4 class="text-xl font-bold text-white">Validação Positiva</h4>
+                        <i data-lucide="check-circle-2" class="text-green-500 w-6 h-6"></i>
+                        <h4 class="text-xl font-bold text-white leading-tight">Validação Positiva</h4>
                     </div>
                     <div class="h-20"><p class="text-slate-400 text-sm">Dados confirmados com sucesso. O robô realizou o lançamento e arquivou o documento sem intervenção humana.</p></div>
                 </div>
@@ -188,10 +189,53 @@
                         <div class="absolute top-4 right-4 bg-red-600 text-[10px] font-bold px-3 py-1 rounded-full text-white">DIVERGÊNCIA</div>
                     </div>
                     <div class="flex items-center gap-3 mb-4 h-14">
-                        <div class="flex-shrink-0 w-8 h-8 bg-red-500/20 rounded-full flex items-center justify-center"><i data-lucide="alert-circle" class="text-red-500 w-5 h-5"></i></div>
-                        <h4 class="text-xl font-bold text-white">Alerta de Erro</h4>
+                        <i data-lucide="alert-circle" class="text-red-500 w-6 h-6"></i>
+                        <h4 class="text-xl font-bold text-white leading-tight">Alerta de Erro</h4>
                     </div>
-                    <div class="h-20"><p class="text-slate-400 text-sm">Divergência detectada. O robô sinaliza a equipe humana instantaneamente para revisão e auditoria manual.</p></div>
+                    <div class="h-20"><p class="text-slate-400 text-sm">Divergência detectada. O robô sinaliza a equipe humana instantaneamente para revisão e auditoria financeira.</p></div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- NOVA SEÇÃO: A Tecnologia por trás da Magia (Educativa) -->
+    <section id="tecnologia" class="py-24 bg-[#0f172a] border-t border-white/5">
+        <div class="max-w-6xl mx-auto px-6">
+            <div class="text-center mb-16">
+                <h3 class="text-3xl font-bold mb-4">A Tecnologia <span class="gradient-text">Explicada</span></h3>
+                <p class="text-slate-400">Entenda como cada peça do quebra-cabeça garante a segurança e eficiência do processo.</p>
+            </div>
+
+            <div class="grid md:grid-cols-3 gap-6">
+                <!-- VPS -->
+                <div class="glass p-8 rounded-3xl">
+                    <i data-lucide="cloud-lightning" class="text-blue-400 w-10 h-10 mb-6"></i>
+                    <h4 class="text-xl font-bold mb-4 text-white">Nuvem (VPS AWS)</h4>
+                    <p class="text-slate-400 text-sm leading-relaxed">Imagine um computador superpotente em um prédio seguro que <strong>nunca desliga</strong>. É lá que o robô mora, trabalhando 24h por dia para você.</p>
+                </div>
+                <!-- Python -->
+                <div class="glass p-8 rounded-3xl">
+                    <i data-lucide="code" class="text-blue-400 w-10 h-10 mb-6"></i>
+                    <h4 class="text-xl font-bold mb-4 text-white">Python (O Cérebro)</h4>
+                    <p class="text-slate-400 text-sm leading-relaxed">É a "receita de bolo" que escrevemos para o robô. Ele dita as ordens exatas: onde buscar os arquivos e como organizá-los com perfeição.</p>
+                </div>
+                <!-- Gemini -->
+                <div class="glass p-8 rounded-3xl">
+                    <i data-lucide="brain" class="text-purple-400 w-10 h-10 mb-6"></i>
+                    <h4 class="text-xl font-bold mb-4 text-white">IA Gemini (Os Olhos)</h4>
+                    <p class="text-slate-400 text-sm leading-relaxed">Diferente de robôs comuns, este usa Inteligência Artificial para <strong>ler e entender</strong> documentos como um humano faria, extraindo os dados certos.</p>
+                </div>
+                <!-- APIs -->
+                <div class="glass p-8 rounded-3xl">
+                    <i data-lucide="zap" class="text-yellow-400 w-10 h-10 mb-6"></i>
+                    <h4 class="text-xl font-bold mb-4 text-white">APIs (Os Garçons)</h4>
+                    <p class="text-slate-400 text-sm leading-relaxed">São pontes digitais que levam a informação do robô direto para o Trello ou Planilha em 1 segundo, sem que ninguém precise digitar nada.</p>
+                </div>
+                <!-- GitHub -->
+                <div class="glass p-8 rounded-3xl">
+                    <i data-lucide="github" class="text-slate-400 w-10 h-10 mb-6"></i>
+                    <h4 class="text-xl font-bold mb-4 text-white">GitHub (O Cofre)</h4>
+                    <p class="text-slate-400 text-sm leading-relaxed">Um local seguro onde guardamos o código do robô. Ele funciona como um backup à prova de falhas, permitindo atualizações rápidas e seguras.</p>
                 </div>
             </div>
         </div>
@@ -204,8 +248,9 @@
                 <h4 class="font-bold text-lg text-white">THIGAS<span class="text-blue-500">.</span>AUTO</h4>
                 <p class="text-slate-500 text-xs">© 2024 Thigas Automation. Especialista em Python & AWS.</p>
             </div>
-            <div class="flex gap-8">
+            <div class="flex gap-8 items-center">
                 <a href="https://github.com/Thigasrp" target="_blank" class="text-slate-400 hover:text-white transition"><i data-lucide="github"></i></a>
+                <a href="https://www.linkedin.com/in/thiago-esposito-soares-b719a7178" target="_blank" class="text-slate-400 hover:text-white transition"><i data-lucide="linkedin"></i></a>
                 <a href="https://wa.me/5511988407323" target="_blank" class="text-slate-400 hover:text-white transition"><i data-lucide="message-circle"></i></a>
             </div>
         </div>
@@ -235,7 +280,5 @@
         }
         lucide.createIcons();
     </script>
-</body>
-</html>
 </body>
 </html>
