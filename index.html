@@ -4,9 +4,16 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Thigas Automation | Inteligência em Fluxos de Trabalho</title>
+    
+    <!-- Ícone da Aba (Favicon) -->
+    <link rel="icon" type="image/png" href="assets/favicon.png">
+
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
+    
+    <!-- Biblioteca de Ícones Estável -->
     <script src="https://unpkg.com/lucide@0.363.0/dist/umd/lucide.min.js"></script>
+    
     <style>
         body { font-family: 'Inter', sans-serif; scroll-behavior: smooth; }
         .gradient-text {
@@ -27,8 +34,10 @@
             z-index: -1;
         }
         .zoom-img { transition: transform 0.5s ease; cursor: zoom-in; }
-        .group:hover .zoom-img { transform: scale(1.15); }
+        .group:hover .zoom-img { transform: scale(1.10); }
         
+        .logo-glow { filter: drop-shadow(0 0 8px rgba(96, 165, 250, 0.3)); }
+
         /* Botão Flutuante WhatsApp */
         .whatsapp-float {
             position: fixed;
@@ -48,16 +57,13 @@
             height: 60px;
             transition: all 0.3s ease;
         }
-        .whatsapp-float:hover {
-            transform: scale(1.1);
-            background-color: #128c7e;
-        }
+        .whatsapp-float:hover { transform: scale(1.1); background-color: #128c7e; }
 
         .img-badge {
             position: absolute;
             bottom: 1rem;
             left: 1rem;
-            background: rgba(0, 0, 0, 0.6);
+            background: rgba(0, 0, 0, 0.7);
             backdrop-filter: blur(4px);
             padding: 4px 10px;
             border-radius: 6px;
@@ -81,24 +87,28 @@
     </a>
 
     <!-- Navbar -->
-    <nav class="fixed w-full z-50 glass py-4">
+    <nav class="fixed w-full z-50 glass py-3">
         <div class="max-w-6xl mx-auto px-6 flex justify-between items-center">
-            <h1 class="text-xl font-bold tracking-tighter">THIGAS<span class="text-blue-500">.</span>AUTO</h1>
+            <!-- LOGO OFICIAL -->
+            <a href="#home" class="flex items-center gap-3 group">
+                <img src="assets/logo.png" alt="Logo" class="h-12 w-auto logo-glow group-hover:scale-105 transition">
+            </a>
+            
             <div class="space-x-8 text-sm font-medium hidden md:flex items-center">
                 <a href="#home" class="hover:text-blue-400 transition">Início</a>
                 <a href="#infra" class="hover:text-blue-400 transition">Infraestrutura</a>
                 <a href="#ia" class="hover:text-blue-400 transition">Inteligência</a>
-                <a href="#tecnologia" class="hover:text-blue-400 transition">Entenda a Magia</a>
+                <a href="#tecnologia" class="hover:text-blue-400 transition">Como Funciona</a>
                 <a href="https://www.linkedin.com/in/thiago-esposito-soares-b719a7178" target="_blank" class="hover:text-blue-400 transition">
                     <i data-lucide="linkedin" class="w-5 h-5"></i>
                 </a>
-                <a href="https://wa.me/5511988407323" target="_blank" class="bg-blue-600 hover:bg-blue-500 px-5 py-2 rounded-full transition shadow-lg shadow-blue-500/20">WhatsApp</a>
+                <a href="https://wa.me/5511988407323" target="_blank" class="bg-blue-600 hover:bg-blue-500 text-white px-5 py-2 rounded-full transition shadow-lg shadow-blue-500/20">WhatsApp</a>
             </div>
         </div>
     </nav>
 
     <!-- Hero Section -->
-    <section id="home" class="pt-32 pb-20 px-6 text-center">
+    <section id="home" class="pt-40 pb-20 px-6 text-center">
         <div class="max-w-4xl mx-auto">
             <span class="px-4 py-1.5 rounded-full border border-blue-500/30 text-blue-400 text-xs font-semibold uppercase tracking-widest bg-blue-500/10">
                 Automação de Processos de Última Geração
@@ -110,9 +120,9 @@
                 Especialista em automação de ponta a ponta: da infraestrutura em nuvem à inteligência artificial generativa aplicada ao seu negócio. 
             </p>
             <div class="flex flex-col md:flex-row justify-center gap-4">
-                <a href="#tecnologia" class="bg-white text-slate-900 px-8 py-4 rounded-xl font-bold hover:bg-slate-200 transition text-center shadow-lg shadow-white/5">Como Funciona?</a>
+                <a href="#tecnologia" class="bg-white text-slate-900 px-8 py-4 rounded-xl font-bold hover:bg-slate-200 transition text-center shadow-lg">Como Funciona?</a>
                 <a href="https://www.linkedin.com/in/thiago-esposito-soares-b719a7178" target="_blank" class="glass px-8 py-4 rounded-xl font-bold hover:bg-white/10 transition flex items-center justify-center gap-2">
-                    <i data-lucide="linkedin" class="w-5 h-5"></i> LinkedIn
+                    <i data-lucide="linkedin" class="w-5 h-5"></i> Meu LinkedIn
                 </a>
             </div>
         </div>
@@ -125,37 +135,39 @@
                 <div class="w-12 h-12 bg-blue-500/20 rounded-2xl flex items-center justify-center text-blue-400 mb-6"><i data-lucide="cloud"></i></div>
                 <h3 class="text-4xl font-bold mb-6">Disponibilidade <span class="text-blue-500">24/7</span> em Nuvem</h3>
                 <p class="text-slate-400 leading-relaxed mb-8">Não dependemos de máquinas locais. Meus robôs rodam em instâncias <strong>AWS EC2 (Linux)</strong>, garantindo que sua automação nunca pare, com segurança empresarial.</p>
-                <div class="space-y-4">
-                    <div class="flex items-center gap-3 p-3 glass rounded-xl"><i data-lucide="server" class="text-blue-500"></i><span class="text-sm font-medium">Monitoramento via SSH e Logs em Tempo Real</span></div>
+                <div class="flex items-center gap-3 p-4 glass rounded-xl">
+                    <i data-lucide="server" class="text-blue-500"></i>
+                    <span class="text-sm font-medium">Monitoramento via SSH e Logs em Tempo Real</span>
                 </div>
             </div>
             <div class="relative group">
                 <div class="glass p-2 rounded-2xl relative overflow-hidden shadow-2xl shadow-blue-500/10">
-                    <img src="assets/aws-console.png" onclick="openModal(this.src)" alt="Console AWS" class="rounded-xl w-full zoom-img">
-                    <span class="img-badge">Console Infraestrutura AWS</span>
+                    <img src="assets/aws-console.png" onclick="openModal(this.src)" alt="AWS" class="rounded-xl w-full zoom-img">
+                    <span class="img-badge">Infraestrutura AWS Cloud</span>
                 </div>
+                <p class="text-[10px] text-slate-500 mt-2 text-center italic">Clique para ampliar e ver detalhes do servidor</p>
             </div>
         </div>
     </section>
 
     <!-- Seção 2: Inteligência (Python + Logs) -->
     <section id="ia" class="py-24 bg-slate-900/30">
-        <div class="max-w-6xl mx-auto px-6">
-            <div class="text-center max-w-3xl mx-auto mb-16">
+        <div class="max-w-6xl mx-auto px-6 text-center">
+            <div class="max-w-3xl mx-auto mb-16">
                 <div class="w-12 h-12 bg-purple-500/20 rounded-2xl flex items-center justify-center text-purple-400 mx-auto mb-6"><i data-lucide="brain-circuit"></i></div>
                 <h3 class="text-4xl font-bold mb-6">Inteligência <span class="text-purple-500">Generativa</span></h3>
-                <p class="text-slate-400 leading-relaxed">Leitura multimodal com <strong>Google Gemini AI</strong>. O sistema interpreta documentos e toma decisões lógicas baseadas no contexto de cada arquivo.</p>
+                <p class="text-slate-400 leading-relaxed">Leitura multimodal com <strong>Google Gemini AI</strong>. O sistema interpreta documentos e toma decisões lógicas baseadas no contexto.</p>
             </div>
             <div class="grid md:grid-cols-2 gap-10">
                 <div class="group relative">
                     <div class="glass p-2 rounded-2xl overflow-hidden shadow-2xl">
-                        <img src="assets/codigo-python.png" onclick="openModal(this.src)" alt="Código Python" class="rounded-lg w-full zoom-img">
+                        <img src="assets/codigo-python.png" onclick="openModal(this.src)" alt="Código" class="rounded-lg w-full zoom-img">
                         <span class="img-badge">Lógica de Automação (Python)</span>
                     </div>
                 </div>
                 <div class="group relative">
                     <div class="glass p-2 rounded-2xl overflow-hidden shadow-2xl">
-                        <img src="assets/log-terminal.png" onclick="openModal(this.src)" alt="Logs de Execução" class="rounded-lg w-full zoom-img">
+                        <img src="assets/log-terminal.png" onclick="openModal(this.src)" alt="Logs" class="rounded-lg w-full zoom-img">
                         <span class="img-badge">Monitoramento em Tempo Real</span>
                     </div>
                 </div>
@@ -163,79 +175,72 @@
         </div>
     </section>
 
-    <!-- Seção 3: Resultados (Trello) -->
+    <!-- Seção 3: Resultados (Trello) - ALINHAMENTO CORRIGIDO -->
     <section id="resultados" class="py-24">
         <div class="max-w-6xl mx-auto px-6">
             <div class="text-center max-w-3xl mx-auto mb-16">
                 <div class="w-12 h-12 bg-green-500/20 rounded-2xl flex items-center justify-center text-green-400 mx-auto mb-6"><i data-lucide="layout"></i></div>
                 <h3 class="text-4xl font-bold mb-6 text-white">Gestão Visual de <span class="text-green-500">Resultados</span></h3>
-                <p class="text-slate-400">Entrega automática via Trello com etiquetas de status, anexos e avisos de divergência financeira.</p>
+                <p class="text-slate-400">Entrega automática via Trello com etiquetas de status e avisos de divergência financeira.</p>
             </div>
             <div class="grid md:grid-cols-2 gap-10">
+                
+                <!-- Card 1 -->
                 <div class="glass p-6 rounded-3xl group hover:border-green-500/30 transition flex flex-col">
                     <div class="aspect-video overflow-hidden rounded-2xl mb-8 relative bg-slate-800">
                         <img src="assets/trello-ok.png" onclick="openModal(this.src)" alt="Sucesso" class="w-full h-full object-cover zoom-img grayscale group-hover:grayscale-0">
                         <div class="absolute top-4 right-4 bg-green-600 text-[10px] font-bold px-3 py-1 rounded-full text-white">CONFERIDO</div>
                     </div>
+                    <!-- Título Travado -->
                     <div class="flex items-center gap-3 mb-4 h-14">
                         <i data-lucide="check-circle-2" class="text-green-500 w-6 h-6"></i>
                         <h4 class="text-xl font-bold text-white leading-tight">Validação Positiva</h4>
                     </div>
+                    <!-- Descrição Travada -->
                     <div class="h-20"><p class="text-slate-400 text-sm">Dados confirmados com sucesso. O robô realizou o lançamento e arquivou o documento sem intervenção humana.</p></div>
                 </div>
+
+                <!-- Card 2 -->
                 <div class="glass p-6 rounded-3xl group hover:border-red-500/30 transition flex flex-col">
                     <div class="aspect-video overflow-hidden rounded-2xl mb-8 relative bg-slate-800">
-                        <img src="assets/trello-erro.png" onclick="openModal(this.src)" alt="Divergência" class="w-full h-full object-cover zoom-img grayscale group-hover:grayscale-0">
+                        <img src="assets/trello-erro.png" onclick="openModal(this.src)" alt="Erro" class="w-full h-full object-cover zoom-img grayscale group-hover:grayscale-0">
                         <div class="absolute top-4 right-4 bg-red-600 text-[10px] font-bold px-3 py-1 rounded-full text-white">DIVERGÊNCIA</div>
                     </div>
+                    <!-- Título Travado -->
                     <div class="flex items-center gap-3 mb-4 h-14">
                         <i data-lucide="alert-circle" class="text-red-500 w-6 h-6"></i>
                         <h4 class="text-xl font-bold text-white leading-tight">Alerta de Erro</h4>
                     </div>
+                    <!-- Descrição Travada -->
                     <div class="h-20"><p class="text-slate-400 text-sm">Divergência detectada. O robô sinaliza a equipe humana instantaneamente para revisão e auditoria financeira.</p></div>
                 </div>
+
             </div>
         </div>
     </section>
 
-    <!-- NOVA SEÇÃO: A Tecnologia por trás da Magia (Educativa) -->
+    <!-- Seção: Tecnologia Explicada -->
     <section id="tecnologia" class="py-24 bg-[#0f172a] border-t border-white/5">
         <div class="max-w-6xl mx-auto px-6">
             <div class="text-center mb-16">
                 <h3 class="text-3xl font-bold mb-4">A Tecnologia <span class="gradient-text">Explicada</span></h3>
-                <p class="text-slate-400">Entenda como cada peça do quebra-cabeça garante a segurança e eficiência do processo.</p>
+                <p class="text-slate-400">Entenda como cada peça garante a segurança e eficiência do processo.</p>
             </div>
-
             <div class="grid md:grid-cols-3 gap-6">
-                <!-- VPS -->
                 <div class="glass p-8 rounded-3xl">
                     <i data-lucide="cloud-lightning" class="text-blue-400 w-10 h-10 mb-6"></i>
-                    <h4 class="text-xl font-bold mb-4 text-white">Nuvem (VPS AWS)</h4>
-                    <p class="text-slate-400 text-sm leading-relaxed">Imagine um computador superpotente em um prédio seguro que <strong>nunca desliga</strong>. É lá que o robô mora, trabalhando 24h por dia para você.</p>
+                    <h4 class="text-xl font-bold mb-4 text-white">Nuvem (AWS)</h4>
+                    <p class="text-slate-400 text-sm">Um computador em prédio seguro que <strong>nunca desliga</strong>. É lá que o robô mora, trabalhando 24h por dia.</p>
                 </div>
-                <!-- Python -->
-                <div class="glass p-8 rounded-3xl">
-                    <i data-lucide="code" class="text-blue-400 w-10 h-10 mb-6"></i>
-                    <h4 class="text-xl font-bold mb-4 text-white">Python (O Cérebro)</h4>
-                    <p class="text-slate-400 text-sm leading-relaxed">É a "receita de bolo" que escrevemos para o robô. Ele dita as ordens exatas: onde buscar os arquivos e como organizá-los com perfeição.</p>
-                </div>
-                <!-- Gemini -->
                 <div class="glass p-8 rounded-3xl">
                     <i data-lucide="brain" class="text-purple-400 w-10 h-10 mb-6"></i>
-                    <h4 class="text-xl font-bold mb-4 text-white">IA Gemini (Os Olhos)</h4>
-                    <p class="text-slate-400 text-sm leading-relaxed">Diferente de robôs comuns, este usa Inteligência Artificial para <strong>ler e entender</strong> documentos como um humano faria, extraindo os dados certos.</p>
+                    <h4 class="text-xl font-bold mb-4 text-white">IA Gemini</h4>
+                    <p class="text-slate-400 text-sm">Usa Inteligência Artificial para <strong>ler e entender</strong> documentos como um humano faria, sem erros.</p>
                 </div>
-                <!-- APIs -->
                 <div class="glass p-8 rounded-3xl">
                     <i data-lucide="zap" class="text-yellow-400 w-10 h-10 mb-6"></i>
-                    <h4 class="text-xl font-bold mb-4 text-white">APIs (Os Garçons)</h4>
-                    <p class="text-slate-400 text-sm leading-relaxed">São pontes digitais que levam a informação do robô direto para o Trello ou Planilha em 1 segundo, sem que ninguém precise digitar nada.</p>
-                </div>
-                <!-- GitHub -->
-                <div class="glass p-8 rounded-3xl">
-                    <i data-lucide="github" class="text-slate-400 w-10 h-10 mb-6"></i>
-                    <h4 class="text-xl font-bold mb-4 text-white">GitHub (O Cofre)</h4>
-                    <p class="text-slate-400 text-sm leading-relaxed">Um local seguro onde guardamos o código do robô. Ele funciona como um backup à prova de falhas, permitindo atualizações rápidas e seguras.</p>
+                    <h4 class="text-xl font-bold mb-4 text-white">APIs</h4>
+                    <p class="text-slate-400 text-sm">Pontes digitais que levam a informação do robô direto para o Trello ou Planilha em 1 segundo.</p>
                 </div>
             </div>
         </div>
@@ -243,10 +248,13 @@
 
     <!-- Footer -->
     <footer class="py-12 border-t border-white/5 bg-slate-900/50">
-        <div class="max-w-6xl mx-auto px-6 flex flex-col md:flex-row justify-between items-center gap-8">
-            <div>
-                <h4 class="font-bold text-lg text-white">THIGAS<span class="text-blue-500">.</span>AUTO</h4>
-                <p class="text-slate-500 text-xs">© 2024 Thigas Automation. Especialista em Python & AWS.</p>
+        <div class="max-w-6xl mx-auto px-6 flex flex-col md:flex-row justify-between items-center gap-8 text-center md:text-left">
+            <div class="flex items-center gap-4 flex-col md:flex-row">
+                <img src="assets/logo.png" alt="Logo" class="h-10 w-auto opacity-90">
+                <div>
+                    <h4 class="font-bold text-white">THIGAS<span class="text-blue-500">.</span>AUTO</h4>
+                    <p class="text-slate-500 text-[10px] uppercase tracking-widest font-bold">Python & AWS Cloud Expert</p>
+                </div>
             </div>
             <div class="flex gap-8 items-center">
                 <a href="https://github.com/Thigasrp" target="_blank" class="text-slate-400 hover:text-white transition"><i data-lucide="github"></i></a>
@@ -280,5 +288,7 @@
         }
         lucide.createIcons();
     </script>
+</body>
+</html>
 </body>
 </html>
