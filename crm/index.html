@@ -270,6 +270,7 @@ input,select,textarea,button{font-family:var(--sans);}
     <div style="display:flex;flex-direction:column;gap:8px">
       <button class="btn-sm" style="background:var(--bdim);color:var(--blue);border:1px solid #38cfff30;padding:12px" onclick="exportarTudo()">📊 Exportar clientes Excel</button>
       <button class="btn-sm btn-del" style="padding:12px" onclick="limparDados()">🗑️ Limpar todos os dados</button>
+      <button class="btn-sm" style="background:var(--bdim);color:var(--blue);border:1px solid #38cfff30;padding:12px" onclick="resetTemplate()">🔄 Resetar mensagem padrão</button>
     </div>
   </div>
 </div>
@@ -364,23 +365,7 @@ function limparNome(nome) {
     .trim();
 }
 
-const TEMPLATE_PADRAO = `Olá, *{nome}*! Tudo bem? 😊
-
-Sou o Thiago, desenvolvedor de automação aqui em Ribeirão Preto.
-
-Desenvolvo soluções que eliminam trabalho manual e economizam horas da sua equipe:
-
-🤖 *Robôs de NF-e* — leitura, validação e lançamento automático
-📅 *Bot de agendamento* — clientes agendam sozinhos pelo WhatsApp, sem secretária
-💬 *Atendimento automático* — WhatsApp e Telegram respondendo 24h
-📊 *Integrações* — Google Drive, Sheets, Trello e notificações automáticas
-
-Tenho sistemas rodando em produção aqui na região agora mesmo.
-
-Me conta: qual dessas tarefas mais toma tempo da sua equipe hoje? 👇
-
-thigasrp.github.io/thigas-automation
-💳 loja.infinitepay.io/thigasautomationsystems`;
+const TEMPLATE_PADRAO = "Ol\u00e1, *{nome}*! Tudo bem? \ud83d\ude0a\n\nSou o Thiago, desenvolvedor de automa\u00e7\u00e3o aqui em Ribeir\u00e3o Preto.\n\nDesenvolvo solu\u00e7\u00f5es que eliminam trabalho manual e economizam horas da sua equipe:\n\n\ud83e\udd16 *Rob\u00f4s de NF-e* \u2014 leitura, valida\u00e7\u00e3o e lan\u00e7amento autom\u00e1tico\n\ud83d\udcc5 *Bot de agendamento* \u2014 clientes agendam sozinhos pelo WhatsApp, sem secret\u00e1ria\n\ud83d\udcac *Atendimento autom\u00e1tico* \u2014 WhatsApp e Telegram respondendo 24h\n\ud83d\udcca *Integra\u00e7\u00f5es* \u2014 Google Drive, Sheets, Trello e notifica\u00e7\u00f5es autom\u00e1ticas\n\nTenho sistemas rodando em produ\u00e7\u00e3o aqui na regi\u00e3o agora mesmo.\n\nMe conta: qual dessas tarefas mais toma tempo da sua equipe hoje? \ud83d\udc47\n\nthigasrp.github.io/thigas-automation\n\ud83d\udcb3 loja.infinitepay.io/thigasautomationsystems";
 
 // ── SALVAR LOCAL ──────────────────────────────────────────────────
 function salvarLocal() {
@@ -951,6 +936,13 @@ function exportarTudo() {
   const rl=leads.map(l=>[l.tipo,l.nome,l.tel,l.site,l.enviado?"Sim":"Não",l.respondeu?"Sim":"Não"]);
   XLSX.utils.book_append_sheet(wb,XLSX.utils.aoa_to_sheet([hl,...rl]),"Leads");
   XLSX.writeFile(wb,"thigas_crm_backup.xlsx");
+}
+
+function resetTemplate() {
+  cfg.template = TEMPLATE_PADRAO;
+  salvarLocal();
+  document.getElementById("template-msg").value = TEMPLATE_PADRAO;
+  toast("✅ Mensagem resetada!");
 }
 
 function limparDados() {
