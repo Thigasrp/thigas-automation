@@ -883,6 +883,16 @@ const blob = new Blob([JSON.stringify(manifest)],{type:"application/json"});
 document.getElementById("manifest-link").href = URL.createObjectURL(blob);
 
 // ── INIT ──────────────────────────────────────────────────────
+// Detecta e corrige template duplicado no localStorage
+if (cfg.template) {
+  const half = Math.floor(cfg.template.length / 2);
+  const firstHalf = cfg.template.substring(0, half);
+  const secondHalf = cfg.template.substring(half);
+  if (firstHalf.trim() === secondHalf.trim()) {
+    cfg.template = firstHalf.trim();
+    salvarLocal();
+  }
+}
 document.getElementById("sheet-id").value = cfg.sheetId||"1kD5qMaygZ0WB1I4EFhfrJPdSrO1r6QB9p78gGWh9tm8";
 document.getElementById("api-key-input").value = cfg.apiKey||"";
 document.getElementById("template-msg").value = cfg.template||TEMPLATE_PADRAO;
