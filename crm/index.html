@@ -48,6 +48,8 @@ input,select,textarea,button{font-family:var(--sans);}
 .stats{display:grid;grid-template-columns:repeat(2,1fr);gap:8px;margin-bottom:16px;}
 .stat{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:14px 12px;}
 .stat-val{font-family:var(--mono);font-size:24px;font-weight:800;}
+.stat-click{cursor:pointer;transition:all 0.2s;}
+.stat-click:hover,.stat-click:active{border-color:var(--green);transform:scale(0.97);}
 .stat-lab{font-size:9px;color:var(--muted);letter-spacing:1px;text-transform:uppercase;margin-top:3px;}
 .stats-4{grid-template-columns:repeat(4,1fr);}
 .stats-4 .stat-val{font-size:18px;}
@@ -154,15 +156,26 @@ input,select,textarea,button{font-family:var(--sans);}
 <!-- 1. DASHBOARD -->
 <div class="page ativa" id="page-dash">
   <div class="stats stats-4" style="margin-top:4px">
-    <div class="stat"><div class="stat-val" id="d-total" style="color:var(--blue)">0</div><div class="stat-lab">Clientes</div></div>
-    <div class="stat"><div class="stat-val" id="d-ativo" style="color:var(--green)">0</div><div class="stat-lab">Ativos</div></div>
-    <div class="stat"><div class="stat-val" id="d-pend" style="color:var(--yellow)">0</div><div class="stat-lab">Pendente</div></div>
+    <div class="stat stat-click" onclick="irParaCRM('Todos')" title="Ver todos os clientes"><div class="stat-val" id="d-total" style="color:var(--blue)">0</div><div class="stat-lab">Clientes ›</div></div>
+    <div class="stat stat-click" onclick="irParaCRM('Ativo')" title="Ver clientes ativos"><div class="stat-val" id="d-ativo" style="color:var(--green)">0</div><div class="stat-lab">Ativos ›</div></div>
+    <div class="stat stat-click" onclick="irParaCRM('Pendente')" title="Ver pendentes"><div class="stat-val" id="d-pend" style="color:var(--yellow)">0</div><div class="stat-lab">Pendente ›</div></div>
     <div class="stat"><div class="stat-val" id="d-mrr" style="color:var(--green)">R$0</div><div class="stat-lab">MRR</div></div>
   </div>
 
   <div class="stats">
-    <div class="stat"><div class="stat-val" id="d-leads" style="color:var(--blue)">0</div><div class="stat-lab">Leads</div></div>
-    <div class="stat"><div class="stat-val" id="d-env" style="color:var(--yellow)">0</div><div class="stat-lab">Disparados</div></div>
+    <div class="stat stat-click" onclick="irParaDisparo('Todos')" title="Ver todos os leads"><div class="stat-val" id="d-leads" style="color:var(--blue)">0</div><div class="stat-lab">Leads ›</div></div>
+    <div class="stat stat-click" onclick="irParaDisparo('enviado')" title="Ver disparados"><div class="stat-val" id="d-env" style="color:var(--yellow)">0</div><div class="stat-lab">Disparados ›</div></div>
+    <div class="stat stat-click" onclick="irParaDisparo('respondeu')" title="Ver quem respondeu"><div class="stat-val" id="d-resp" style="color:var(--green)">0</div><div class="stat-lab">Responderam ›</div></div>
+    <div class="stat stat-click" onclick="irParaDisparo('pendente')" title="Ver pendentes"><div class="stat-val" id="d-pend-leads" style="color:var(--muted)">0</div><div class="stat-lab">Pendentes ›</div></div>
+  </div>
+
+  <!-- DRILL DOWN PANEL -->
+  <div id="dash-panel" style="display:none">
+    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px">
+      <div style="font-size:13px;font-weight:800" id="dash-panel-titulo"></div>
+      <button onclick="fecharPanel()" style="background:var(--surface2);border:1px solid var(--border);color:var(--muted);border-radius:8px;padding:4px 12px;font-size:11px;font-weight:800;cursor:pointer">✕ Fechar</button>
+    </div>
+    <div id="dash-panel-lista"></div>
   </div>
 
   <div class="card" style="border-color:#ffe56630">
@@ -547,12 +560,87 @@ function setFiltroStatus(f) {
 }
 
 // ── DASHBOARD ──────────────────────────────────────────────────
+// Navegação do dashboard para listas
+function irParaCRM(filtro) {
+  filtroAtivoCRM = filtro;
+  trocarPagina("crm", document.querySelectorAll(".nav-btn")[1]);
+  setTimeout(() => setFiltroStatus(filtro), 100);
+}
+
+let filtroAtivoCRM = "Todos";
+let dashPanelAtivo = null;
+
+function irParaDisparo(tipo) {
+  // Mostra painel inline no dashboard
+  const panel = document.getElementById("dash-panel");
+  const lista = document.getElementById("dash-panel-lista");
+  const titulo = document.getElementById("dash-panel-titulo");
+
+  let filtrados = [];
+  let tituloTxt = "";
+
+  if (tipo === "Todos") {
+    filtrados = leads;
+    tituloTxt = `📋 Todos os leads (${leads.length})`;
+  } else if (tipo === "enviado") {
+    filtrados = leads.filter(l => l.enviado && !l.respondeu);
+    tituloTxt = `📤 Enviados sem resposta (${filtrados.length})`;
+  } else if (tipo === "respondeu") {
+    filtrados = leads.filter(l => l.respondeu);
+    tituloTxt = `✅ Responderam (${filtrados.length})`;
+  } else if (tipo === "pendente") {
+    filtrados = leads.filter(l => !l.enviado);
+    tituloTxt = `⏳ Pendentes (${filtrados.length})`;
+  }
+
+  titulo.textContent = tituloTxt;
+
+  if (!filtrados.length) {
+    lista.innerHTML = '<div class="vazio"><h3>Nenhum item</h3></div>';
+  } else {
+    lista.innerHTML = filtrados.slice(0, 30).map(l => `
+      <div style="background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:12px;margin-bottom:8px;display:flex;justify-content:space-between;align-items:center">
+        <div>
+          <div style="font-size:12px;font-weight:800">${limparNome(l.nome)}</div>
+          <div style="font-size:10px;color:var(--muted)">${l.tipo} · ${l.tel||"sem tel"}</div>
+        </div>
+        <div style="display:flex;gap:6px;align-items:center">
+          ${l.respondeu ? '<span class="pill pill-y" style="font-size:8px">RESPONDEU</span>' : l.enviado ? '<span class="pill pill-g" style="font-size:8px">ENVIADO</span>' : '<span class="pill" style="background:var(--surface2);color:var(--muted);border:1px solid var(--border);font-family:var(--mono);font-size:8px;padding:3px 8px;border-radius:6px">PENDENTE</span>'}
+          ${l.tel ? `<button onclick="abrirMsgLead(${l.id})" style="background:#25d36630;color:#25d366;border:1px solid #25d36640;border-radius:8px;padding:4px 8px;font-size:10px;font-weight:800;cursor:pointer">📲</button>` : ""}
+        </div>
+      </div>`).join("") +
+      (filtrados.length > 30 ? `<div style="text-align:center;padding:12px;font-size:11px;color:var(--muted)">+${filtrados.length-30} mais na aba DISPARO</div>` : "");
+  }
+
+  panel.style.display = "block";
+  panel.scrollIntoView({behavior:"smooth", block:"start"});
+  dashPanelAtivo = tipo;
+}
+
+function fecharPanel() {
+  document.getElementById("dash-panel").style.display = "none";
+  dashPanelAtivo = null;
+}
+
+function abrirMsgLead(id) {
+  const l = leads.find(x => x.id === id);
+  if (!l) return;
+  const template = cfg.template || TEMPLATE_PADRAO;
+  const nomeClean = limparNome(l.nome);
+  const msg = template.replace(/{nome}/g, nomeClean).replace(/{segmento}/g, l.tipo);
+  const num = (l.tel||"").replace(/\D/g,"");
+  l.enviado = true; salvarLocal(); renderDash();
+  window.open(`https://wa.me/55${num}?text=${encodeURIComponent(msg)}`, "_blank");
+}
+
 function renderDash() {
   const total = clientes.length;
   const ativos = clientes.filter(c=>c.status==="Ativo").length;
   const pend = clientes.filter(c=>c.status==="Pendente").length;
   const mrr = clientes.filter(c=>c.status==="Ativo").reduce((a,c)=>a+(PLANO_VAL[c.plano]||0),0);
   const env = leads.filter(l=>l.enviado).length;
+  const resp = leads.filter(l=>l.respondeu).length;
+  const pendLeads = leads.filter(l=>!l.enviado).length;
 
   document.getElementById("d-total").textContent = total;
   document.getElementById("d-ativo").textContent = ativos;
@@ -560,6 +648,11 @@ function renderDash() {
   document.getElementById("d-mrr").textContent   = "R$"+mrr;
   document.getElementById("d-leads").textContent = leads.length;
   document.getElementById("d-env").textContent   = env;
+  document.getElementById("d-resp").textContent  = resp;
+  document.getElementById("d-pend-leads").textContent = pendLeads;
+
+  // Atualiza painel se estiver aberto
+  if (dashPanelAtivo) irParaDisparo(dashPanelAtivo);
 
   const hoje = new Date().getDate();
   const prox = clientes.filter(c=>c.status==="Ativo"&&c.venc).filter(c=>{
@@ -883,6 +976,16 @@ const blob = new Blob([JSON.stringify(manifest)],{type:"application/json"});
 document.getElementById("manifest-link").href = URL.createObjectURL(blob);
 
 // ── INIT ──────────────────────────────────────────────────────
+// Detecta e corrige template duplicado no localStorage
+if (cfg.template) {
+  const half = Math.floor(cfg.template.length / 2);
+  const firstHalf = cfg.template.substring(0, half);
+  const secondHalf = cfg.template.substring(half);
+  if (firstHalf.trim() === secondHalf.trim()) {
+    cfg.template = firstHalf.trim();
+    salvarLocal();
+  }
+}
 document.getElementById("sheet-id").value = cfg.sheetId||"1kD5qMaygZ0WB1I4EFhfrJPdSrO1r6QB9p78gGWh9tm8";
 document.getElementById("api-key-input").value = cfg.apiKey||"";
 document.getElementById("template-msg").value = cfg.template||TEMPLATE_PADRAO;
