@@ -1,0 +1,886 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<meta name="theme-color" content="#080c0e">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Thigas CRM">
+<link rel="manifest" href="#" id="manifest-link">
+<title>Thigas Automation CRM</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700&family=Syne:wght@400;700;800&display=swap');
+:root{
+  --bg:#080c0e;--surface:#0f1518;--surface2:#161d21;--border:#1e2d33;
+  --green:#00ff87;--gdim:#00ff8718;--yellow:#ffe566;--ydim:#ffe56618;
+  --red:#ff4455;--rdim:#ff445518;--blue:#38cfff;--bdim:#38cfff18;
+  --text:#d4e8f0;--muted:#4a6878;
+  --mono:'JetBrains Mono',monospace;--sans:'Syne',sans-serif;
+  --radius:14px;
+}
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent;}
+body{font-family:var(--sans);background:var(--bg);color:var(--text);min-height:100vh;max-width:480px;margin:0 auto;}
+input,select,textarea,button{font-family:var(--sans);}
+
+/* NAV BOTTOM */
+.nav{position:fixed;bottom:0;left:50%;transform:translateX(-50%);width:100%;max-width:480px;background:var(--surface);border-top:1px solid var(--border);display:flex;z-index:200;padding-bottom:env(safe-area-inset-bottom);}
+.nav-btn{flex:1;padding:12px 4px 10px;border:none;background:none;color:var(--muted);cursor:pointer;display:flex;flex-direction:column;align-items:center;gap:3px;font-size:9px;font-weight:800;letter-spacing:0.5px;font-family:var(--sans);transition:color 0.2s;}
+.nav-btn.ativo{color:var(--green);}
+.nav-btn svg{width:20px;height:20px;}
+
+/* HEADER */
+.header{background:var(--surface);border-bottom:1px solid var(--border);padding:14px 16px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:100;}
+.header-title{font-family:var(--mono);font-size:13px;font-weight:800;color:var(--green);letter-spacing:2px;}
+.header-sub{font-size:9px;color:var(--muted);margin-top:1px;letter-spacing:1px;}
+.sync-btn{background:var(--gdim);border:1px solid var(--green);color:var(--green);border-radius:99px;padding:5px 12px;font-size:10px;font-weight:800;cursor:pointer;font-family:var(--mono);letter-spacing:1px;}
+.sync-btn.loading{opacity:0.6;pointer-events:none;}
+
+/* PAGE */
+.page{display:none;padding:16px;padding-bottom:90px;}
+.page.ativa{display:block;}
+
+/* CARDS */
+.card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:16px;margin-bottom:12px;}
+.card-title{font-size:13px;font-weight:800;margin-bottom:14px;}
+
+/* STATS GRID */
+.stats{display:grid;grid-template-columns:repeat(2,1fr);gap:8px;margin-bottom:16px;}
+.stat{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:14px 12px;}
+.stat-val{font-family:var(--mono);font-size:24px;font-weight:800;}
+.stat-lab{font-size:9px;color:var(--muted);letter-spacing:1px;text-transform:uppercase;margin-top:3px;}
+.stats-4{grid-template-columns:repeat(4,1fr);}
+.stats-4 .stat-val{font-size:18px;}
+
+/* FORM */
+.form-group{margin-bottom:12px;}
+.form-label{font-family:var(--mono);font-size:9px;color:var(--muted);letter-spacing:1.5px;text-transform:uppercase;margin-bottom:6px;display:block;}
+.form-input,.form-select{width:100%;background:var(--surface2);border:1px solid var(--border);border-radius:10px;padding:11px 14px;color:var(--text);font-size:13px;outline:none;transition:border-color 0.2s;}
+.form-input:focus,.form-select:focus{border-color:var(--green);}
+.form-select option{background:var(--surface2);}
+.form-row{display:grid;grid-template-columns:1fr 1fr;gap:10px;}
+.btn-primary{width:100%;background:var(--green);color:#000;border:none;border-radius:12px;padding:14px;font-size:14px;font-weight:800;cursor:pointer;margin-top:4px;transition:opacity 0.2s;}
+.btn-primary:active{opacity:0.8;}
+.btn-primary:disabled{opacity:0.4;cursor:not-allowed;}
+
+/* CLIENTE CARD */
+.cli-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:14px;margin-bottom:10px;transition:border-color 0.2s;}
+.cli-card.ativo{border-color:#00ff8740;}
+.cli-card.pendente{border-color:#ffe56640;}
+.cli-card.inativo{opacity:0.5;}
+.cli-top{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:10px;gap:8px;}
+.cli-nome{font-size:14px;font-weight:800;line-height:1.2;}
+.cli-emp{font-size:11px;color:var(--muted);margin-top:2px;}
+.pill{font-family:var(--mono);font-size:8px;font-weight:800;padding:3px 8px;border-radius:6px;letter-spacing:0.5px;flex-shrink:0;}
+.pill-g{background:var(--gdim);color:var(--green);border:1px solid #00ff8730;}
+.pill-y{background:var(--ydim);color:var(--yellow);border:1px solid #ffe56630;}
+.pill-r{background:var(--rdim);color:var(--red);border:1px solid #ff445530;}
+.pill-b{background:var(--bdim);color:var(--blue);border:1px solid #38cfff30;}
+.cli-meta{display:grid;grid-template-columns:repeat(3,1fr);gap:6px;margin-bottom:12px;}
+.meta-item{background:var(--surface2);border-radius:8px;padding:8px;}
+.meta-label{font-family:var(--mono);font-size:8px;color:var(--muted);letter-spacing:1px;}
+.meta-val{font-size:12px;font-weight:700;margin-top:2px;}
+.cli-btns{display:flex;gap:6px;flex-wrap:wrap;}
+.btn-sm{border:none;border-radius:9px;padding:8px 12px;font-size:11px;font-weight:800;cursor:pointer;font-family:var(--sans);transition:all 0.15s;}
+.btn-sm:active{transform:scale(0.96);}
+.btn-wpp{background:#25d366;color:#000;flex:1;}
+.btn-ativar{background:var(--gdim);color:var(--green);border:1px solid #00ff8730;}
+.btn-lembrete{background:var(--ydim);color:var(--yellow);border:1px solid #ffe56630;}
+.btn-edit{background:var(--surface2);color:var(--muted);border:1px solid var(--border);}
+.btn-del{background:var(--rdim);color:var(--red);border:1px solid #ff445530;}
+
+/* LEAD CARD (disparo) */
+.lead-card{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:14px;margin-bottom:10px;}
+.lead-card.enviado{border-color:#00ff8730;opacity:0.6;}
+.lead-tipo{font-family:var(--mono);font-size:8px;color:var(--blue);letter-spacing:1.5px;text-transform:uppercase;margin-bottom:4px;}
+.lead-nome{font-size:14px;font-weight:800;}
+.lead-tel{font-family:var(--mono);font-size:11px;color:var(--muted);margin-top:3px;}
+.msg-preview{background:var(--surface2);border:1px solid var(--border);border-radius:10px;padding:12px;font-size:11px;font-family:var(--mono);line-height:1.7;color:#b0ccd8;white-space:pre-wrap;margin:10px 0;max-height:120px;overflow:hidden;position:relative;}
+.msg-preview::after{content:'';position:absolute;bottom:0;left:0;right:0;height:30px;background:linear-gradient(transparent,var(--surface2));}
+.lead-btns{display:flex;gap:6px;}
+
+/* EXTRATOR */
+.search-box{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:16px;margin-bottom:12px;}
+.prog-bar{height:3px;background:var(--border);border-radius:99px;overflow:hidden;margin:10px 0;}
+.prog-fill{height:100%;background:var(--green);border-radius:99px;transition:width 0.4s;box-shadow:0 0 6px var(--green);}
+.log-box{background:var(--surface2);border:1px solid var(--border);border-radius:10px;padding:12px;font-family:var(--mono);font-size:10px;color:var(--muted);line-height:1.8;max-height:150px;overflow-y:auto;margin-top:10px;}
+
+/* SETUP */
+.setup-box{background:var(--surface);border:1px solid var(--border);border-radius:var(--radius);padding:16px;margin-bottom:12px;}
+.setup-box h3{font-size:13px;font-weight:800;margin-bottom:12px;color:var(--yellow);}
+.file-drop{border:2px dashed var(--border);border-radius:10px;padding:24px;text-align:center;cursor:pointer;transition:all 0.2s;margin-bottom:10px;}
+.file-drop:hover{border-color:var(--green);background:var(--gdim);}
+.file-drop p{font-size:12px;color:var(--muted);margin-top:6px;}
+
+/* MODAL */
+.modal-overlay{display:none;position:fixed;inset:0;background:#00000095;z-index:300;align-items:flex-end;}
+.modal-overlay.open{display:flex;}
+.modal{background:var(--surface);border-radius:20px 20px 0 0;padding:24px 20px 40px;width:100%;max-height:80vh;overflow-y:auto;}
+.modal h3{font-size:15px;font-weight:800;margin-bottom:12px;}
+.modal-msg{background:var(--surface2);border:1px solid var(--border);border-radius:10px;padding:14px;font-size:12px;font-family:var(--mono);line-height:1.7;color:#b0ccd8;white-space:pre-wrap;margin-bottom:16px;}
+.modal-btns{display:flex;flex-direction:column;gap:8px;}
+.btn-wpp-big{background:#25d366;color:#000;border:none;border-radius:12px;padding:14px;font-size:14px;font-weight:800;cursor:pointer;font-family:var(--sans);}
+.btn-fechar{background:var(--surface2);color:var(--muted);border:1px solid var(--border);border-radius:12px;padding:12px;font-size:13px;font-weight:800;cursor:pointer;font-family:var(--sans);}
+
+/* MISC */
+.vazio{text-align:center;padding:50px 20px;color:var(--muted);}
+.vazio h3{font-size:14px;margin-bottom:6px;}
+.vazio p{font-size:11px;line-height:1.6;}
+.tag{font-family:var(--mono);font-size:9px;padding:2px 8px;border-radius:6px;font-weight:800;}
+.filtros{display:flex;gap:6px;overflow-x:auto;padding-bottom:8px;margin-bottom:12px;}
+.filtros::-webkit-scrollbar{display:none;}
+.filtro{background:var(--surface);border:1px solid var(--border);color:var(--muted);border-radius:99px;padding:6px 14px;font-size:10px;font-weight:800;cursor:pointer;white-space:nowrap;font-family:var(--sans);}
+.filtro.ativo{background:var(--gdim);border-color:var(--green);color:var(--green);}
+.toast{position:fixed;top:70px;left:50%;transform:translateX(-50%);background:var(--surface);border:1px solid var(--green);color:var(--green);padding:10px 20px;border-radius:99px;font-family:var(--mono);font-size:11px;font-weight:700;z-index:400;opacity:0;transition:opacity 0.3s;pointer-events:none;white-space:nowrap;}
+.toast.show{opacity:1;}
+</style>
+</head>
+<body>
+
+<!-- TOAST -->
+<div class="toast" id="toast"></div>
+
+<!-- HEADER -->
+<div class="header">
+  <div>
+    <div class="header-title">⚡ THIGAS CRM</div>
+    <div class="header-sub" id="sync-status">Configure a chave na aba ⚙️</div>
+  </div>
+  <button class="sync-btn" id="sync-btn" onclick="sincronizar()">↻ SYNC</button>
+</div>
+
+<!-- PAGES -->
+
+<!-- 1. DASHBOARD -->
+<div class="page ativa" id="page-dash">
+  <div class="stats stats-4" style="margin-top:4px">
+    <div class="stat"><div class="stat-val" id="d-total" style="color:var(--blue)">0</div><div class="stat-lab">Clientes</div></div>
+    <div class="stat"><div class="stat-val" id="d-ativo" style="color:var(--green)">0</div><div class="stat-lab">Ativos</div></div>
+    <div class="stat"><div class="stat-val" id="d-pend" style="color:var(--yellow)">0</div><div class="stat-lab">Pendente</div></div>
+    <div class="stat"><div class="stat-val" id="d-mrr" style="color:var(--green)">R$0</div><div class="stat-lab">MRR</div></div>
+  </div>
+
+  <div class="stats">
+    <div class="stat"><div class="stat-val" id="d-leads" style="color:var(--blue)">0</div><div class="stat-lab">Leads</div></div>
+    <div class="stat"><div class="stat-val" id="d-env" style="color:var(--yellow)">0</div><div class="stat-lab">Disparados</div></div>
+  </div>
+
+  <div class="card" style="border-color:#ffe56630">
+    <div style="font-size:12px;color:var(--yellow);font-weight:800;margin-bottom:8px">🔔 Próximos vencimentos</div>
+    <div id="vencimentos-lista"><div style="font-size:11px;color:var(--muted)">Nenhum vencimento próximo</div></div>
+  </div>
+</div>
+
+<!-- 2. CLIENTES -->
+<div class="page" id="page-crm">
+  <div style="display:flex;gap:8px;margin-bottom:14px">
+    <input class="form-input" id="busca-cli" placeholder="🔍 Buscar cliente..." oninput="renderClientes()" style="flex:1">
+    <button class="btn-sm btn-ativar" onclick="mostrarFormCliente()">+ Novo</button>
+  </div>
+  <div class="filtros" id="filtros-cli"></div>
+  <div id="lista-clientes"></div>
+</div>
+
+<!-- 3. DISPARO -->
+<div class="page" id="page-disparo">
+  <div class="stats stats-4" style="margin-top:4px;margin-bottom:14px">
+    <div class="stat"><div class="stat-val" id="disp-total" style="color:var(--blue)">0</div><div class="stat-lab">Total</div></div>
+    <div class="stat"><div class="stat-val" id="disp-env" style="color:var(--green)">0</div><div class="stat-lab">Enviado</div></div>
+    <div class="stat"><div class="stat-val" id="disp-resp" style="color:var(--yellow)">0</div><div class="stat-lab">Respondeu</div></div>
+    <div class="stat"><div class="stat-val" id="disp-conv" style="color:var(--green)">0%</div><div class="stat-lab">Conversão</div></div>
+  </div>
+  <div class="filtros" id="filtros-disp"></div>
+  <div id="lista-leads"></div>
+</div>
+
+<!-- 4. EXTRATOR -->
+<div class="page" id="page-extrator">
+  <div class="search-box">
+    <div class="card-title" style="color:var(--blue)">🔍 Buscar Leads</div>
+    <div class="form-group">
+      <label class="form-label">Segmento / Tipo de negócio</label>
+      <input class="form-input" id="ext-query" placeholder="Ex: contabilidade, dentista, academia...">
+    </div>
+    <div class="form-row">
+      <div class="form-group">
+        <label class="form-label">Cidade</label>
+        <input class="form-input" id="ext-cidade" value="Ribeirão Preto SP">
+      </div>
+      <div class="form-group">
+        <label class="form-label">Quantidade</label>
+        <select class="form-select" id="ext-qtde">
+          <option value="20">20 leads</option>
+          <option value="40">40 leads</option>
+          <option value="60">60 leads</option>
+        </select>
+      </div>
+    </div>
+    <button class="btn-primary" id="btn-buscar" onclick="buscarLeads()">🚀 Buscar Leads</button>
+    <div class="prog-bar" id="ext-prog-bar" style="display:none"><div class="prog-fill" id="ext-prog" style="width:0%"></div></div>
+    <div class="log-box" id="ext-log" style="display:none"></div>
+  </div>
+
+  <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px" id="leads-header" style="display:none">
+    <div style="font-size:12px;color:var(--muted)" id="leads-count"></div>
+    <button class="btn-sm btn-ativar" onclick="exportarLeads()">📊 Exportar Excel</button>
+  </div>
+  <div id="lista-leads-ext"></div>
+</div>
+
+<!-- 5. SETUP -->
+<div class="page" id="page-setup">
+  <div class="setup-box">
+    <h3>🔑 Chave da Conta de Serviço</h3>
+    <div class="file-drop" onclick="document.getElementById('key-file').click()">
+      <div style="font-size:30px">📄</div>
+      <p id="key-status">Clique para carregar o JSON da chave</p>
+      <input type="file" id="key-file" accept=".json" style="display:none" onchange="carregarChave(this)">
+    </div>
+    <div class="form-group">
+      <label class="form-label">ID da Planilha Google Sheets</label>
+      <input class="form-input" id="sheet-id" value="1kD5qMaygZ0WB1I4EFhfrJPdSrO1r6QB9p78gGWh9tm8" placeholder="Cole o ID da planilha">
+    </div>
+    <div class="form-group">
+      <label class="form-label">API Key (Places + Sheets)</label>
+      <input class="form-input" id="api-key-input" placeholder="AIzaSy...">
+    </div>
+    <div class="form-group">
+      <label class="form-label">Mensagem padrão de disparo</label>
+      <textarea class="form-input" id="template-msg" rows="8" style="resize:vertical;line-height:1.6"></textarea>
+      <div style="font-size:10px;color:var(--muted);margin-top:6px">Use {nome}, {segmento} para personalizar</div>
+    </div>
+    <button class="btn-primary" onclick="salvarConfig()">✅ Salvar Configurações</button>
+  </div>
+
+  <div class="setup-box">
+    <h3>📤 Importar / Exportar</h3>
+    <div style="display:flex;flex-direction:column;gap:8px">
+      <button class="btn-sm" style="background:var(--bdim);color:var(--blue);border:1px solid #38cfff30;padding:12px" onclick="exportarTudo()">📊 Exportar clientes Excel</button>
+      <button class="btn-sm btn-del" style="padding:12px" onclick="limparDados()">🗑️ Limpar todos os dados</button>
+    </div>
+  </div>
+</div>
+
+<!-- MODAL FORMULÁRIO CLIENTE -->
+<div class="modal-overlay" id="modal-form" onclick="fecharModalForm(event)">
+  <div class="modal" onclick="event.stopPropagation()" style="max-height:90vh">
+    <h3 id="form-titulo">➕ Novo Cliente</h3>
+    <div class="form-group"><label class="form-label">Nome</label><input class="form-input" id="f-nome" placeholder="Nome do cliente"></div>
+    <div class="form-group"><label class="form-label">Empresa</label><input class="form-input" id="f-empresa" placeholder="Nome da empresa"></div>
+    <div class="form-group"><label class="form-label">WhatsApp (com DDD)</label><input class="form-input" id="f-tel" placeholder="16999887766" type="tel"></div>
+    <div class="form-row">
+      <div class="form-group"><label class="form-label">Plano</label>
+        <select class="form-select" id="f-plano">
+          <option value="Básico">Básico R$120</option>
+          <option value="Pro">Pro R$220</option>
+          <option value="Premium">Premium R$380</option>
+        </select>
+      </div>
+      <div class="form-group"><label class="form-label">Status</label>
+        <select class="form-select" id="f-status">
+          <option value="Pendente">Pendente</option>
+          <option value="Ativo">Ativo</option>
+          <option value="Trial">Trial</option>
+          <option value="Inativo">Inativo</option>
+        </select>
+      </div>
+    </div>
+    <div class="form-group"><label class="form-label">Dia vencimento</label><input class="form-input" id="f-venc" type="number" min="1" max="28" placeholder="Ex: 5"></div>
+    <div class="form-group"><label class="form-label">Observações</label><input class="form-input" id="f-obs" placeholder="Anotações..."></div>
+    <button class="btn-primary" onclick="salvarCliente()" id="btn-salvar-cli">✅ Salvar</button>
+    <button class="btn-fechar" style="margin-top:8px" onclick="fecharModalForm()">Cancelar</button>
+  </div>
+</div>
+
+<!-- MODAL MENSAGEM -->
+<div class="modal-overlay" id="modal-msg" onclick="fecharModalMsg(event)">
+  <div class="modal" onclick="event.stopPropagation()">
+    <h3 id="modal-msg-titulo">Mensagem</h3>
+    <div class="modal-msg" id="modal-msg-texto"></div>
+    <div class="modal-btns">
+      <button class="btn-wpp-big" id="modal-wpp-btn">📲 Abrir WhatsApp</button>
+      <button class="btn-fechar" onclick="fecharModalMsg()">Cancelar</button>
+    </div>
+  </div>
+</div>
+
+<!-- NAV -->
+<nav class="nav">
+  <button class="nav-btn ativo" onclick="trocarPagina('dash',this)">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>
+    DASH
+  </button>
+  <button class="nav-btn" onclick="trocarPagina('crm',this)">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+    CRM
+  </button>
+  <button class="nav-btn" onclick="trocarPagina('disparo',this)">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 2L11 13"/><path d="M22 2L15 22 11 13 2 9l20-7z"/></svg>
+    DISPARO
+  </button>
+  <button class="nav-btn" onclick="trocarPagina('extrator',this)">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+    LEADS
+  </button>
+  <button class="nav-btn" onclick="trocarPagina('setup',this)">
+    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.07 4.93a10 10 0 0 1 0 14.14M4.93 4.93a10 10 0 0 0 0 14.14"/></svg>
+    CONFIG
+  </button>
+</nav>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+<script>
+// ── ESTADO ──────────────────────────────────────────────────────
+let cfg = JSON.parse(localStorage.getItem("thigas_cfg") || '{}');
+let clientes = JSON.parse(localStorage.getItem("thigas_cli") || '[]');
+let leads = JSON.parse(localStorage.getItem("thigas_leads") || '[]');
+let editandoId = null;
+
+const PLANO_VAL = {Básico:120, Pro:220, Premium:380};
+const PLANO_IMPL = {Básico:500, Pro:1200, Premium:2500};
+const LOJA = {
+  Básico: "https://loja.infinitepay.io/thigasautomationsystems/mml6576-basico",
+  Pro:    "https://loja.infinitepay.io/thigasautomationsystems/vqt5538-pro",
+  Premium:"https://loja.infinitepay.io/thigasautomationsystems/mnk6857-premium",
+};
+
+const TEMPLATE_PADRAO = `Olá, *{nome}*! Tudo bem? 😊
+
+Sou o Thiago, desenvolvedor de automação aqui em Ribeirão Preto.
+
+Desenvolvo soluções que eliminam trabalho manual e economizam horas da sua equipe:
+
+🤖 *Robôs de NF-e* — leitura, validação e lançamento automático
+📅 *Bot de agendamento* — clientes agendam sozinhos pelo WhatsApp, sem secretária
+💬 *Atendimento automático* — WhatsApp e Telegram respondendo 24h
+📊 *Integrações* — Google Drive, Sheets, Trello e notificações automáticas
+
+Tenho sistemas rodando em produção aqui na região agora mesmo.
+
+Me conta: qual dessas tarefas mais toma tempo da sua equipe hoje? 👇
+
+thigasrp.github.io/thigas-automation
+💳 loja.infinitepay.io/thigasautomationsystems`;
+
+// ── SALVAR LOCAL ──────────────────────────────────────────────────
+function salvarLocal() {
+  localStorage.setItem("thigas_cli", JSON.stringify(clientes));
+  localStorage.setItem("thigas_leads", JSON.stringify(leads));
+  localStorage.setItem("thigas_cfg", JSON.stringify(cfg));
+}
+
+// ── TOAST ──────────────────────────────────────────────────────
+function toast(msg, dur=2500) {
+  const t = document.getElementById("toast");
+  t.textContent = msg;
+  t.classList.add("show");
+  setTimeout(() => t.classList.remove("show"), dur);
+}
+
+// ── NAV ──────────────────────────────────────────────────────
+function trocarPagina(id, btn) {
+  document.querySelectorAll(".page").forEach(p => p.classList.remove("ativa"));
+  document.querySelectorAll(".nav-btn").forEach(b => b.classList.remove("ativo"));
+  document.getElementById("page-"+id).classList.add("ativa");
+  btn.classList.add("ativo");
+  if (id==="dash") renderDash();
+  if (id==="crm") renderClientes();
+  if (id==="disparo") renderLeads();
+}
+
+// ── MENSAGENS ──────────────────────────────────────────────────
+const MSGS = {
+  boas_vindas: c => `Olá, *${c.nome}*! Bem-vindo(a) à Thigas Automation! 🎉
+
+Recebi sua contratação do plano *${c.plano}* e já vou iniciar a configuração do seu sistema.
+
+⏱️ Prazo: *${c.plano==="Básico"?"2 dias úteis":c.plano==="Pro"?"3-5 dias úteis":"5-7 dias úteis"}*
+
+Assim que estiver pronto te aviso aqui! Qualquer dúvida pode perguntar. 🚀`,
+
+  ativacao: c => `Olá, *${c.nome}*! 🚀
+
+Seu sistema *${c.plano}* está pronto e ativado!
+
+✅ Tudo configurado e funcionando
+📅 Assinatura mensal de *R$${PLANO_VAL[c.plano]}/mês* — vence todo dia *${c.venc||"5"}*
+
+Para ativar sua assinatura:
+${LOJA[c.plano]}
+
+Qualquer dúvida é só chamar! Obrigado pela confiança 🤝`,
+
+  lembrete: c => `Olá, *${c.nome}*! 😊
+
+Lembrando que sua assinatura *${c.plano}* vence dia *${c.venc||"5"}*.
+
+💳 Valor: *R$${PLANO_VAL[c.plano]}/mês*
+
+Se precisar de algo é só falar!`,
+};
+
+function abrirModalMsg(titulo, msg, tel) {
+  document.getElementById("modal-msg-titulo").textContent = titulo;
+  document.getElementById("modal-msg-texto").textContent = msg;
+  const num = tel.replace(/\D/g,"");
+  document.getElementById("modal-wpp-btn").onclick = () => {
+    window.open(`https://wa.me/55${num}?text=${encodeURIComponent(msg)}`,"_blank");
+  };
+  document.getElementById("modal-msg").classList.add("open");
+}
+function fecharModalMsg(e) {
+  if (!e || e.target===document.getElementById("modal-msg"))
+    document.getElementById("modal-msg").classList.remove("open");
+}
+
+// ── CLIENTES ──────────────────────────────────────────────────
+function mostrarFormCliente(id=null) {
+  editandoId = id;
+  const c = id ? clientes.find(x=>x.id===id) : null;
+  document.getElementById("form-titulo").textContent = c ? "✏️ Editar Cliente" : "➕ Novo Cliente";
+  document.getElementById("f-nome").value   = c?.nome||"";
+  document.getElementById("f-empresa").value= c?.empresa||"";
+  document.getElementById("f-tel").value    = c?.tel||"";
+  document.getElementById("f-plano").value  = c?.plano||"Básico";
+  document.getElementById("f-status").value = c?.status||"Pendente";
+  document.getElementById("f-venc").value   = c?.venc||"";
+  document.getElementById("f-obs").value    = c?.obs||"";
+  document.getElementById("modal-form").classList.add("open");
+}
+function fecharModalForm(e) {
+  if (!e || e.target===document.getElementById("modal-form"))
+    document.getElementById("modal-form").classList.remove("open");
+}
+
+function salvarCliente() {
+  const nome = document.getElementById("f-nome").value.trim();
+  const tel  = document.getElementById("f-tel").value.replace(/\D/g,"");
+  if (!nome||!tel) { toast("❌ Nome e WhatsApp obrigatórios"); return; }
+  const c = {
+    id: editandoId||Date.now(), nome,
+    empresa: document.getElementById("f-empresa").value.trim(),
+    tel, plano: document.getElementById("f-plano").value,
+    status: document.getElementById("f-status").value,
+    venc: document.getElementById("f-venc").value,
+    obs: document.getElementById("f-obs").value.trim(),
+    dataCadastro: new Date().toLocaleDateString("pt-BR"),
+  };
+  if (editandoId) { const i=clientes.findIndex(x=>x.id===editandoId); clientes[i]=c; }
+  else clientes.push(c);
+  salvarLocal(); fecharModalForm(); renderClientes(); renderDash();
+  toast("✅ Cliente salvo!");
+  sincronizarSheets();
+}
+
+function ativarCliente(id) {
+  const c = clientes.find(x=>x.id===id);
+  c.status = "Ativo"; salvarLocal(); renderClientes(); renderDash();
+  abrirModalMsg("🚀 Ativação", MSGS.ativacao(c), c.tel);
+  sincronizarSheets();
+}
+
+function removerCliente(id) {
+  if (!confirm("Remover cliente?")) return;
+  clientes = clientes.filter(c=>c.id!==id);
+  salvarLocal(); renderClientes(); renderDash();
+  toast("🗑️ Removido");
+}
+
+function renderClientes() {
+  const busca = (document.getElementById("busca-cli")?.value||"").toLowerCase();
+  const lista = document.getElementById("lista-clientes");
+  const filtroAtivo = document.querySelector("#filtros-cli .filtro.ativo")?.dataset.val||"Todos";
+
+  const filtros = ["Todos","Ativo","Pendente","Trial","Inativo"];
+  document.getElementById("filtros-cli").innerHTML = filtros.map(f=>
+    `<div class="filtro ${f===filtroAtivo?"ativo":""}" data-val="${f}" onclick="setFiltroStatus('${f}')">${f}</div>`
+  ).join("");
+
+  let lista_ = clientes.filter(c => {
+    const ok = filtroAtivo==="Todos"||c.status===filtroAtivo;
+    const buscaOk = !busca||(c.nome+c.empresa+c.tel).toLowerCase().includes(busca);
+    return ok && buscaOk;
+  });
+
+  if (!lista_.length) {
+    lista.innerHTML = '<div class="vazio"><h3>Nenhum cliente</h3><p>Adiciona com o botão + Novo</p></div>';
+    return;
+  }
+
+  const pillCls = {Ativo:"pill-g",Pendente:"pill-y",Inativo:"pill-r",Trial:"pill-b"};
+  const cardCls = {Ativo:"ativo",Pendente:"pendente",Inativo:"inativo",Trial:""};
+
+  lista.innerHTML = lista_.map(c=>`
+    <div class="cli-card ${cardCls[c.status]||""}">
+      <div class="cli-top">
+        <div><div class="cli-nome">${c.nome}</div><div class="cli-emp">${c.empresa||"—"}</div></div>
+        <span class="pill ${pillCls[c.status]||"pill-y"}">${c.status.toUpperCase()}</span>
+      </div>
+      <div class="cli-meta">
+        <div class="meta-item"><div class="meta-label">PLANO</div><div class="meta-val" style="color:${c.plano==="Premium"?"var(--blue)":c.plano==="Pro"?"var(--yellow)":"var(--green)"}">${c.plano}</div></div>
+        <div class="meta-item"><div class="meta-label">MENSALIDADE</div><div class="meta-val">R$${PLANO_VAL[c.plano]}</div></div>
+        <div class="meta-item"><div class="meta-label">VENCE DIA</div><div class="meta-val">${c.venc||"—"}</div></div>
+      </div>
+      ${c.obs?`<div style="font-size:10px;color:var(--muted);padding:8px;background:var(--surface2);border-radius:8px;margin-bottom:10px">${c.obs}</div>`:""}
+      <div class="cli-btns">
+        <button class="btn-sm btn-wpp" onclick="abrirModalMsg('👋 Boas-vindas',\`${MSGS.boas_vindas(c).replace(/`/g,"\\`").replace(/\n/g,"\\n")}\`,'${c.tel}')">👋 Boas-vindas</button>
+        <button class="btn-sm btn-ativar" onclick="ativarCliente(${c.id})">✅</button>
+        <button class="btn-sm btn-lembrete" onclick="abrirModalMsg('🔔 Lembrete',\`${MSGS.lembrete(c).replace(/`/g,"\\`").replace(/\n/g,"\\n")}\`,'${c.tel}')">🔔</button>
+        <button class="btn-sm btn-edit" onclick="mostrarFormCliente(${c.id})">✏️</button>
+        <button class="btn-sm btn-del" onclick="removerCliente(${c.id})">🗑️</button>
+      </div>
+    </div>`).join("");
+}
+
+function setFiltroStatus(f) {
+  document.querySelectorAll("#filtros-cli .filtro").forEach(b=>{
+    b.classList.toggle("ativo", b.dataset.val===f);
+  });
+  renderClientes();
+}
+
+// ── DASHBOARD ──────────────────────────────────────────────────
+function renderDash() {
+  const total = clientes.length;
+  const ativos = clientes.filter(c=>c.status==="Ativo").length;
+  const pend = clientes.filter(c=>c.status==="Pendente").length;
+  const mrr = clientes.filter(c=>c.status==="Ativo").reduce((a,c)=>a+(PLANO_VAL[c.plano]||0),0);
+  const env = leads.filter(l=>l.enviado).length;
+
+  document.getElementById("d-total").textContent = total;
+  document.getElementById("d-ativo").textContent = ativos;
+  document.getElementById("d-pend").textContent  = pend;
+  document.getElementById("d-mrr").textContent   = "R$"+mrr;
+  document.getElementById("d-leads").textContent = leads.length;
+  document.getElementById("d-env").textContent   = env;
+
+  const hoje = new Date().getDate();
+  const prox = clientes.filter(c=>c.status==="Ativo"&&c.venc).filter(c=>{
+    const diff = parseInt(c.venc)-hoje;
+    return diff>=0 && diff<=5;
+  }).sort((a,b)=>parseInt(a.venc)-parseInt(b.venc));
+
+  document.getElementById("vencimentos-lista").innerHTML = prox.length
+    ? prox.map(c=>`<div style="display:flex;justify-content:space-between;padding:7px 0;border-bottom:1px solid var(--border);font-size:12px">
+        <span>${c.nome} <span style="color:var(--muted);font-size:10px">${c.plano}</span></span>
+        <span style="color:var(--yellow);font-weight:800">Dia ${c.venc}</span>
+      </div>`).join("")
+    : '<div style="font-size:11px;color:var(--muted)">Nenhum vencimento nos próximos 5 dias</div>';
+}
+
+// ── DISPARO ──────────────────────────────────────────────────
+let filtroDisp = "Todos";
+function renderLeads() {
+  const total = leads.length;
+  const env   = leads.filter(l=>l.enviado).length;
+  const resp  = leads.filter(l=>l.respondeu).length;
+  document.getElementById("disp-total").textContent = total;
+  document.getElementById("disp-env").textContent   = env;
+  document.getElementById("disp-resp").textContent  = resp;
+  document.getElementById("disp-conv").textContent  = env>0?Math.round(resp/env*100)+"%":"0%";
+
+  const tipos = ["Todos",...new Set(leads.map(l=>l.tipo))];
+  document.getElementById("filtros-disp").innerHTML = tipos.map(t=>
+    `<div class="filtro ${t===filtroDisp?"ativo":""}" onclick="setFiltroDisp('${t}')">${t}</div>`
+  ).join("");
+
+  const lista = document.getElementById("lista-leads");
+  const filtrados = leads.filter(l=>filtroDisp==="Todos"||l.tipo===filtroDisp);
+
+  if (!filtrados.length) {
+    lista.innerHTML = '<div class="vazio"><h3>Sem leads</h3><p>Use a aba 🔍 LEADS para buscar empresas</p></div>';
+    return;
+  }
+
+  const template = cfg.template || TEMPLATE_PADRAO;
+  lista.innerHTML = filtrados.map(l=>{
+    const msg = template.replace(/{nome}/g,l.nome).replace(/{segmento}/g,l.tipo);
+    const num = (l.tel||"").replace(/\D/g,"");
+    const wppLink = `https://wa.me/55${num}?text=${encodeURIComponent(msg)}`;
+    return `<div class="lead-card ${l.enviado?"enviado":""}">
+      <div class="lead-tipo">${l.tipo}</div>
+      <div style="display:flex;justify-content:space-between;align-items:flex-start">
+        <div><div class="lead-nome">${l.nome}</div><div class="lead-tel">${l.tel||"Sem telefone"}</div></div>
+        ${l.respondeu?'<span class="pill pill-y">RESPONDEU</span>':l.enviado?'<span class="pill pill-g">ENVIADO</span>':''}
+      </div>
+      <div class="msg-preview">${msg}</div>
+      <div class="lead-btns">
+        ${num?`<button class="btn-sm btn-wpp" style="flex:1" onclick="enviarLead(${l.id},'${wppLink.replace(/'/g,"\\'")}')">📲 Abrir WhatsApp</button>`
+             :`<button class="btn-sm" style="background:var(--surface2);color:var(--muted);border:1px solid var(--border);flex:1" disabled>Sem telefone</button>`}
+        <button class="btn-sm btn-lembrete" onclick="marcarRespondeu(${l.id})">🌟 Respondeu</button>
+        <button class="btn-sm btn-del" onclick="removerLead(${l.id})">✕</button>
+      </div>
+    </div>`;
+  }).join("");
+}
+
+function setFiltroDisp(f) { filtroDisp=f; renderLeads(); }
+function enviarLead(id, link) {
+  const l = leads.find(x=>x.id===id); if(l) l.enviado=true;
+  window.open(link,"_blank"); setTimeout(()=>{salvarLocal();renderLeads();},500);
+}
+function marcarRespondeu(id) {
+  const l = leads.find(x=>x.id===id); if(l){l.respondeu=true;l.enviado=true;}
+  salvarLocal(); renderLeads();
+}
+function removerLead(id) {
+  leads = leads.filter(l=>l.id!==id); salvarLocal(); renderLeads();
+}
+
+// ── EXTRATOR ──────────────────────────────────────────────────
+function log(msg) {
+  const box = document.getElementById("ext-log");
+  box.style.display = "block";
+  box.innerHTML += `<div>> ${msg}</div>`;
+  box.scrollTop = box.scrollHeight;
+}
+
+async function buscarLeads() {
+  const query   = document.getElementById("ext-query").value.trim();
+  const cidade  = document.getElementById("ext-cidade").value.trim();
+  const maxQtde = parseInt(document.getElementById("ext-qtde").value);
+  const apiKey  = cfg.apiKey || document.getElementById("api-key-input").value.trim();
+
+  if (!query) { toast("❌ Digite o segmento que quer buscar"); return; }
+  if (!apiKey) { toast("❌ Configure a API Key na aba ⚙️ CONFIG"); return; }
+
+  const btn = document.getElementById("btn-buscar");
+  btn.disabled = true; btn.textContent = "⏳ Buscando...";
+  document.getElementById("ext-prog-bar").style.display = "block";
+  document.getElementById("ext-log").innerHTML = "";
+  document.getElementById("ext-log").style.display = "block";
+  document.getElementById("lista-leads-ext").innerHTML = "";
+
+  const novosLeads = [];
+  let pageToken = null;
+  let pagina = 1;
+  const maxPaginas = Math.ceil(maxQtde/20);
+
+  log(`Buscando: "${query}" em ${cidade}...`);
+
+  while (pagina <= maxPaginas) {
+    const prog = Math.round((pagina/maxPaginas)*80);
+    document.getElementById("ext-prog").style.width = prog+"%";
+
+    const body = {
+      textQuery: `${query} ${cidade}`,
+      languageCode: "pt-BR",
+      maxResultCount: 20,
+    };
+    if (pageToken) body.pageToken = pageToken;
+
+    try {
+      const r = await fetch("https://places.googleapis.com/v1/places:searchText", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          "X-Goog-Api-Key": apiKey,
+          "X-Goog-FieldMask": "places.id,places.displayName,places.formattedAddress,places.nationalPhoneNumber,places.websiteUri,places.rating,places.userRatingCount,nextPageToken"
+        },
+        body: JSON.stringify(body)
+      });
+      const data = await r.json();
+      if (data.error) { log(`❌ Erro: ${data.error.message}`); break; }
+      const places = data.places || [];
+      log(`Pág ${pagina}: ${places.length} resultados`);
+      places.forEach(p => {
+        const nome = p.displayName?.text || "";
+        const tel  = p.nationalPhoneNumber || "";
+        const num  = tel.replace(/\D/g,"");
+        novosLeads.push({
+          id: Date.now()+Math.random(),
+          tipo: query, nome, tel,
+          whatsapp: num.length>=10 ? `https://wa.me/55${num}` : "",
+          site: p.websiteUri||"",
+          endereco: p.formattedAddress||"",
+          avaliacao: p.rating||"",
+          avaliacoes: p.userRatingCount||"",
+          enviado: false, respondeu: false,
+        });
+      });
+      pageToken = data.nextPageToken;
+      if (!pageToken) break;
+      pagina++;
+      await new Promise(r=>setTimeout(r,2000));
+    } catch(e) { log(`❌ Erro de rede: ${e.message}`); break; }
+  }
+
+  // Remove duplicatas por nome+tel
+  const existentes = new Set(leads.map(l=>l.nome+l.tel));
+  const unicos = novosLeads.filter(l=>!existentes.has(l.nome+l.tel));
+  leads.push(...unicos);
+  salvarLocal();
+
+  document.getElementById("ext-prog").style.width = "100%";
+  log(`✅ ${unicos.length} leads novos adicionados! (${novosLeads.length-unicos.length} duplicatas ignoradas)`);
+  document.getElementById("leads-header").style.display = "flex";
+  document.getElementById("leads-count").textContent = `${unicos.length} novos leads`;
+
+  btn.disabled=false; btn.textContent="🚀 Buscar Leads";
+  renderLeadsExt(unicos);
+  renderDash();
+  toast(`✅ ${unicos.length} leads encontrados!`);
+}
+
+function renderLeadsExt(lista) {
+  document.getElementById("lista-leads-ext").innerHTML = lista.slice(0,20).map(l=>`
+    <div class="lead-card">
+      <div class="lead-tipo">${l.tipo}</div>
+      <div class="lead-nome">${l.nome}</div>
+      <div class="lead-tel">${l.tel||"Sem telefone"} ${l.avaliacao?"⭐"+l.avaliacao:""}</div>
+      ${l.endereco?`<div style="font-size:10px;color:var(--muted);margin-top:3px">${l.endereco}</div>`:""}
+    </div>`).join("")+(lista.length>20?`<div style="text-align:center;padding:16px;font-size:11px;color:var(--muted)">+ ${lista.length-20} leads na aba DISPARO</div>`:"");
+}
+
+function exportarLeads() {
+  const rows=[["Segmento","Nome","Telefone","WhatsApp","Site","Endereço","Avaliação","Enviado?","Respondeu?"]];
+  leads.forEach(l=>rows.push([l.tipo,l.nome,l.tel,l.whatsapp,l.site,l.endereco,l.avaliacao,l.enviado?"Sim":"Não",l.respondeu?"Sim":"Não"]));
+  const wb=XLSX.utils.book_new();
+  XLSX.utils.book_append_sheet(wb,XLSX.utils.aoa_to_sheet(rows),"Leads");
+  XLSX.writeFile(wb,"leads_thigas.xlsx");
+}
+
+// ── GOOGLE SHEETS SYNC ──────────────────────────────────────────
+let serviceAccountKey = JSON.parse(localStorage.getItem("thigas_key")||"null");
+
+function carregarChave(input) {
+  const file = input.files[0]; if(!file) return;
+  const reader = new FileReader();
+  reader.onload = e => {
+    try {
+      serviceAccountKey = JSON.parse(e.target.result);
+      localStorage.setItem("thigas_key", JSON.stringify(serviceAccountKey));
+      document.getElementById("key-status").textContent = "✅ " + serviceAccountKey.client_email;
+      document.getElementById("sync-status").textContent = "Chave carregada";
+      toast("✅ Chave carregada!");
+    } catch { toast("❌ JSON inválido"); }
+  };
+  reader.readAsText(file);
+}
+
+async function getAccessToken() {
+  if (!serviceAccountKey) throw new Error("Chave não configurada");
+  const now = Math.floor(Date.now()/1000);
+  const header = btoa(JSON.stringify({alg:"RS256",typ:"JWT"})).replace(/=/g,"").replace(/\+/g,"-").replace(/\//g,"_");
+  const payload = btoa(JSON.stringify({
+    iss: serviceAccountKey.client_email,
+    scope: "https://www.googleapis.com/auth/spreadsheets https://www.googleapis.com/auth/drive",
+    aud: "https://oauth2.googleapis.com/token",
+    iat: now, exp: now+3600,
+  })).replace(/=/g,"").replace(/\+/g,"-").replace(/\//g,"_");
+
+  const sign = `${header}.${payload}`;
+  const keyData = serviceAccountKey.private_key
+    .replace("-----BEGIN PRIVATE KEY-----","").replace("-----END PRIVATE KEY-----","")
+    .replace(/\s/g,"");
+  const binaryKey = Uint8Array.from(atob(keyData), c=>c.charCodeAt(0));
+  const cryptoKey = await crypto.subtle.importKey("pkcs8", binaryKey.buffer,
+    {name:"RSASSA-PKCS1-v1_5",hash:"SHA-256"}, false, ["sign"]);
+  const signature = await crypto.subtle.sign("RSASSA-PKCS1-v1_5", cryptoKey,
+    new TextEncoder().encode(sign));
+  const sig = btoa(String.fromCharCode(...new Uint8Array(signature)))
+    .replace(/=/g,"").replace(/\+/g,"-").replace(/\//g,"_");
+  const jwt = `${sign}.${sig}`;
+
+  const resp = await fetch("https://oauth2.googleapis.com/token", {
+    method:"POST", headers:{"Content-Type":"application/x-www-form-urlencoded"},
+    body:`grant_type=urn%3Aietf%3Aparams%3Aoauth%3Agrant-type%3Ajwt-bearer&assertion=${jwt}`
+  });
+  const data = await resp.json();
+  if (!data.access_token) throw new Error(data.error_description||"Falha ao obter token");
+  return data.access_token;
+}
+
+async function sincronizarSheets() {
+  const sheetId = cfg.sheetId || document.getElementById("sheet-id")?.value;
+  if (!sheetId || !serviceAccountKey) return;
+  try {
+    const token = await getAccessToken();
+    const rows = [
+      ["ID","Nome","Empresa","WhatsApp","Plano","Status","Vencimento","MRR","Cadastro","Obs"],
+      ...clientes.map(c=>[c.id,c.nome,c.empresa,c.tel,c.plano,c.status,"Dia "+(c.venc||""),
+        "R$"+(PLANO_VAL[c.plano]||0),c.dataCadastro,c.obs])
+    ];
+    await fetch(`https://sheets.googleapis.com/v4/spreadsheets/${sheetId}/values/Clientes!A1:J${rows.length+1}?valueInputOption=RAW`,{
+      method:"PUT",
+      headers:{"Authorization":"Bearer "+token,"Content-Type":"application/json"},
+      body:JSON.stringify({values:rows})
+    });
+
+    const rowsL = [
+      ["Segmento","Nome","Telefone","Site","Enviado","Respondeu"],
+      ...leads.map(l=>[l.tipo,l.nome,l.tel,l.site,l.enviado?"Sim":"Não",l.respondeu?"Sim":"Não"])
+    ];
+    await fetch(`https://sheets.googleapis.com/v4/spreadsheets/${sheetId}/values/Leads!A1:F${rowsL.length+1}?valueInputOption=RAW`,{
+      method:"PUT",
+      headers:{"Authorization":"Bearer "+token,"Content-Type":"application/json"},
+      body:JSON.stringify({values:rowsL})
+    });
+
+    document.getElementById("sync-status").textContent = "Sync " + new Date().toLocaleTimeString("pt-BR",{hour:"2-digit",minute:"2-digit"});
+    toast("☁️ Sincronizado!");
+  } catch(e) {
+    toast("❌ Sync falhou: "+e.message);
+  }
+}
+
+async function sincronizar() {
+  const btn = document.getElementById("sync-btn");
+  btn.textContent = "...";
+  btn.classList.add("loading");
+  await sincronizarSheets();
+  btn.textContent = "↻ SYNC";
+  btn.classList.remove("loading");
+}
+
+// ── SETUP ──────────────────────────────────────────────────────
+function salvarConfig() {
+  cfg.sheetId  = document.getElementById("sheet-id").value.trim();
+  cfg.apiKey   = document.getElementById("api-key-input").value.trim();
+  cfg.template = document.getElementById("template-msg").value;
+  salvarLocal();
+  toast("✅ Configurações salvas!");
+}
+
+function exportarTudo() {
+  const wb=XLSX.utils.book_new();
+  const hc=["ID","Nome","Empresa","Tel","Plano","Status","Vencimento","MRR","Cadastro","Obs"];
+  const rc=clientes.map(c=>[c.id,c.nome,c.empresa,c.tel,c.plano,c.status,"Dia "+(c.venc||""),"R$"+(PLANO_VAL[c.plano]||0),c.dataCadastro,c.obs]);
+  XLSX.utils.book_append_sheet(wb,XLSX.utils.aoa_to_sheet([hc,...rc]),"Clientes");
+  const hl=["Segmento","Nome","Tel","Site","Enviado","Respondeu"];
+  const rl=leads.map(l=>[l.tipo,l.nome,l.tel,l.site,l.enviado?"Sim":"Não",l.respondeu?"Sim":"Não"]);
+  XLSX.utils.book_append_sheet(wb,XLSX.utils.aoa_to_sheet([hl,...rl]),"Leads");
+  XLSX.writeFile(wb,"thigas_crm_backup.xlsx");
+}
+
+function limparDados() {
+  if (!confirm("⚠️ Apagar TODOS os dados? Esta ação não pode ser desfeita!")) return;
+  clientes=[]; leads=[];
+  localStorage.removeItem("thigas_cli");
+  localStorage.removeItem("thigas_leads");
+  renderDash(); renderClientes(); renderLeads();
+  toast("🗑️ Dados apagados");
+}
+
+// ── PWA MANIFEST ──────────────────────────────────────────────
+const manifest = {
+  name:"Thigas Automation CRM",
+  short_name:"Thigas CRM",
+  start_url:".",
+  display:"standalone",
+  background_color:"#080c0e",
+  theme_color:"#080c0e",
+  icons:[{src:"https://via.placeholder.com/192x192/00ff87/000000?text=T",sizes:"192x192",type:"image/png"}]
+};
+const blob = new Blob([JSON.stringify(manifest)],{type:"application/json"});
+document.getElementById("manifest-link").href = URL.createObjectURL(blob);
+
+// ── INIT ──────────────────────────────────────────────────────
+document.getElementById("sheet-id").value = cfg.sheetId||"1kD5qMaygZ0WB1I4EFhfrJPdSrO1r6QB9p78gGWh9tm8";
+document.getElementById("api-key-input").value = cfg.apiKey||"";
+document.getElementById("template-msg").value = cfg.template||TEMPLATE_PADRAO;
+if (serviceAccountKey) document.getElementById("key-status").textContent = "✅ "+serviceAccountKey.client_email;
+renderDash();
+</script>
+</body>
+</html>
