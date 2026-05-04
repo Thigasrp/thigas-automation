@@ -344,6 +344,13 @@ const LOJA = {
   Premium:"https://loja.infinitepay.io/thigasautomationsystems/mnk6857-premium",
 };
 
+// Limpa nome da empresa
+function limparNome(nome) {
+  return nome.split(/[|\-–—,]/)[0]
+    .replace(/\s+(em|de|do|da|no|na)\s+.*/i, "")
+    .trim();
+}
+
 const TEMPLATE_PADRAO = `Olá, *{nome}*! Tudo bem? 😊
 
 Sou o Thiago, desenvolvedor de automação aqui em Ribeirão Preto.
@@ -594,7 +601,7 @@ function renderLeads() {
 
   const template = cfg.template || TEMPLATE_PADRAO;
   lista.innerHTML = filtrados.map(l=>{
-    const msg = template.replace(/{nome}/g,l.nome).replace(/{segmento}/g,l.tipo);
+    const nomeClean = limparNome(l.nome); const msg = template.replace(/{nome}/g,nomeClean).replace(/{segmento}/g,l.tipo);
     const num = (l.tel||"").replace(/\D/g,"");
     const wppLink = `https://wa.me/55${num}?text=${encodeURIComponent(msg)}`;
     return `<div class="lead-card ${l.enviado?"enviado":""}">
