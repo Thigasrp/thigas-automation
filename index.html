@@ -35,7 +35,7 @@
 }
 *{box-sizing:border-box}
 html{-webkit-text-size-adjust:100%}
-body{margin:0;background:var(--page);color:var(--ink);font-family:"Schibsted Grotesk",system-ui,sans-serif;font-size:1.0625rem;line-height:1.6;font-variant-numeric:tabular-nums}
+body{margin:0;background:var(--page);color:var(--ink);font-family:"Schibsted Grotesk",system-ui,sans-serif;font-size:1.0625rem;line-height:1.6}
 img{max-width:100%;display:block}
 a{color:var(--green);text-underline-offset:.18em;text-decoration-thickness:1px}
 a:hover{text-decoration-thickness:2px}
@@ -59,6 +59,7 @@ nav.main a:hover{color:var(--ink)}
 .hero p.lead strong{color:var(--ink);font-weight:600}
 
 /* timeline — the one bold element */
+.tl,.facts dd{font-variant-numeric:tabular-nums}
 .tl{margin:36px 0 8px;border-top:2px solid var(--ink);padding-top:20px}
 .tl-head{display:flex;justify-content:space-between;align-items:baseline;gap:16px;flex-wrap:wrap;margin-bottom:18px}
 .tl-head h2{font-size:1.05rem;margin:0;font-weight:700}
